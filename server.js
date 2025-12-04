@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import { connectDB } from './config/dbConfig.js'
 import soulbeatRoutes from './routes/soulbeatRoutes.js'
+import uploadRoutes from './routes/uploadRoutes.js'
 
 dotenv.config()
 
@@ -18,6 +19,9 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api', soulbeatRoutes)
+
+app.use('/imgs', express.static('uploads/imgs'))
+app.use('/api', uploadRoutes)
 
 // Arrancar servidor después de conectar DB
 connectDB()

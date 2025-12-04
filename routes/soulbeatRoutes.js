@@ -3,7 +3,6 @@ import { obtenerTodosAurisController, obtenerAuriPorIdController, crearNuevoAuri
 import { parseValor } from '../middleware/parseParams.js'
 
 
-
 const router = express.Router()
 
 // Obtener todos los Auriculares
