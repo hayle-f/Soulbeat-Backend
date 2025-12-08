@@ -103,7 +103,7 @@ export async function obtenerAurisPorAtributoController(req, res) {
     }
 }
 
-/* // obtener auriculares por un atributo/valor
+/* // obtener auriculares por un atributo/valor Nested
 export async function obtenerAurisPorAtributoNestedController(req, res) {
     try {
         const { atributo } = req.params

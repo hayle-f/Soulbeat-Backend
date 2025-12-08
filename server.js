@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 import { connectDB } from './config/dbConfig.js'
 import soulbeatRoutes from './routes/soulbeatRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
+import authRoutes from './routes/authRoutes.js'
+import colorsRoutes from './routes/colorsRoutes.js'
 
 dotenv.config()
 
@@ -19,9 +21,11 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api', soulbeatRoutes)
+app.use('/auth', authRoutes)
+app.use('/api/colors', colorsRoutes)
 
-app.use('/imgs', express.static('uploads/imgs'))
-app.use('/api', uploadRoutes)
+app.use('/api/uploads/imgs', express.static('uploads/imgs'))
+app.use('/api/uploads', uploadRoutes)
 
 // Arrancar servidor después de conectar DB
 connectDB()

@@ -5,34 +5,31 @@ import mongoose from "mongoose"
 const auricularSchema = new mongoose.Schema({
     id: { 
         type: String, 
-        required: [true, 'El id del producto es obligatorio'], 
+        required: true, 
         unique: true
     },
     nombre: { 
         type: String, 
-        required: [true, 'El nombre es obligatorio'], 
-        minlength: [3, 'El nombre debe tener al menos 3 caracteres'], 
-        maxlength: [90, 'El nombre no puede superar los 90 caracteres']
+        required: true, 
+        minlength: 3,  
+        maxlength: 90
     },
-    tipo: { 
-        type: String, 
-        required: [true, 'El tipo es obligatorio'],
-        enum: {
-            values: ["in-ear", "over-ear", "on-ear"],
-            message: 'El tipo debe ser "in-ear", "over-ear" o "on-ear"'
-        }
+    tipo: {
+        type: String,
+        enum: ['over-ear', 'on-ear', 'in-ear'],
+        required: true
     },
     precio: { 
         type: Number, 
-        required: [true, 'El precio es obligatorio'],
-        min: [0, 'El precio no puede ser negativo']
+        required: true,
+        min: 0
     },
     especificaciones: {         
-        inalambrico: {type: Boolean, required: [true, 'La especificación inalambrico es obligatoria'] },
-        resistenteAgua: {type: Boolean, required: [true, 'La especificación resistenteAgua es obligatoria'] },
-        cancelacionRuido: {type: Boolean, required: [true, 'La especificación cancelacionRuido es obligatoria'] },
-        microfono: {type: Boolean, required: [true, 'La especificación microfono es obligatoria'] },
-        duracionBateria: { type: Number, min: [0, 'La duración de batería no puede ser negativa'], required: [true, 'La duración de batería es obligatoria'] }
+        inalambrico: {type: Boolean, required: true },
+        resistenteAgua: {type: Boolean, required: true },
+        cancelacionRuido: {type: Boolean, required: true },
+        microfono: {type: Boolean, required: true },
+        duracionBateria: { type: Number, min: 0, required: true }
     },
     items: [
         {
@@ -43,21 +40,20 @@ const auricularSchema = new mongoose.Schema({
             },
             color: { 
                 type: String, 
-                required: [true, 'El color es obligatorio'],
+                required: true,
             },
             stock: { 
                 type: Number, 
-                required: [true, 'El stock es obligatorio'],
-                min: [0, 'El stock no puede ser negativo']
+                required: true,
+                min: 0
             },
             imagen: { 
                 type: String, 
-                required: [true, 'La imagen es obligatoria'],
-                match: [/\.(jpg|jpeg|png)$/i, 'El archivo debe ser una imagen (.jpg, .jpeg o .png)']
+                required: true
             },
         }
     ]
-})
+}, { timestamps: true })
 
 // Pre-save para generar ids de items automáticamente: productId-color
 auricularSchema.pre('validate', function () {

@@ -1,20 +1,3 @@
-/* // Middleware genérico para parsear valor automáticamente
-export function parseValor(req, res, next) {
-    let { valor } = req.params
-
-    // detectar tipo automáticamente
-    if (valor === "true") valor = true
-    else if (valor === "false") valor = false
-    else if (!isNaN(valor)) valor = Number(valor)
-    // sino queda como string
-
-    // guardar valor parseado en req para usar en el controller
-    req.valorParseado = valor
-
-    // pasar al siguiente middleware/controller
-    next()
-}
- */
 
 export function parseValor(req, res, next) {
     let { atributo, valor } = req.params  // sacamos las 2 cosas de la URL

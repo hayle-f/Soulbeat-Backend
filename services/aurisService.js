@@ -2,7 +2,8 @@
 import AuricularRepository from '../repositories/AuricularRepository.js'
 
 export async function obtenerTodosAuris() {
-    return await AuricularRepository.obtenerTodos()}
+    return await AuricularRepository.obtenerTodos()
+}
 
 
 export async function obtenerAuriPorId(id) {

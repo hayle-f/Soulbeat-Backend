@@ -22,7 +22,7 @@ router.post('/imgs', upload.single('imgVariante'), (req, res) => {
     fs.renameSync(req.file.path, newPath)
 
     // construir la URL pública
-    const urlImagen = `http://localhost:5000/imgs/${req.file.filename}${extension}`
+    const urlImagen = `http://localhost:5000/api/uploads/imgs/${req.file.filename}${extension}`
 
     res.json({ url: urlImagen })
 })
