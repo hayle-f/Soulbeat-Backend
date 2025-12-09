@@ -12,7 +12,7 @@ const auricularSchema = new mongoose.Schema({
         type: String, 
         required: true, 
         minlength: 3,  
-        maxlength: 90
+        maxlength: 50
     },
     tipo: {
         type: String,

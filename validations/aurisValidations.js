@@ -1,64 +1,66 @@
 import { body } from "express-validator"
-import { normalizeLowerString, normalizeString } from '../utils/normalizers'
+import { normalizeString, normalizeBoolean, normalizeNumber, normalizeColorsAndCheckDuplicates } from '../utils/normalizers.js'
+import { colors } from '../utils/colors.js'
 
 
 export const aurisValidations = () => [
 
     //---------- Nombre obligatorio
     body('nombre')
-        .customSanitizer(normalizeString)
+        .customSanitizer(value => normalizeString(value, false))
         .notEmpty().withMessage('El nombre del auricular es obligatorio.')
-        .isLength({ min: 3, max: 90 }).withMessage('El nombre debe tener entre 3 y 90 caracteres.'),
+        .isLength({ max: 50 }).withMessage('El nombre debe tener como máximo 50 caracteres.')
+        .matches(/[a-zA-ZÁÉÍÓÚáéíóúÑñ]{3,}/)
+        .withMessage('El nombre debe tener al menos 3 letras consecutivas.'),
 
     // ---------- Tipo
     body('tipo')
+        .customSanitizer(value => normalizeString(value, true)) 
         .notEmpty().withMessage('El tipo es obligatorio.')
-        .customSanitizer(normalizeLowerString)
-        //verifica que el valor esté dentro de las opciones válidas
         .isIn(['over-ear', 'on-ear', 'in-ear'])
         .withMessage('El tipo debe ser uno de: over-ear, on-ear, in-ear.'),
 
     // ---------- Precio
     body('precio')
         .notEmpty().withMessage('El precio es obligatorio.')
-        //verifica que el valor sea un número >= 0, 
-        .isFloat({ min: 0 }).withMessage('El precio no puede ser negativo.')
-        //convierte a Number por si vino como string
-        .toFloat(),
+        .custom(value => normalizeNumber(value, 'float', 0)),
 
     // ---------- Especificaciones (boolean)
     // Crea la validación de cada booleano y el '...' asegura que cada body() quede como middleware independiente al mismo nivel q las demas
-    ...['inalambrico', 'resistenteAgua', 'cancelacionRuido', 'microfono'].map((esp) => {
+    ...['inalambrico', 'resistenteAgua', 'cancelacionRuido', 'microfono'].map((esp) => 
         body(`especificaciones.${esp}`)
             .exists().withMessage(`El valor de ${esp} es obligatorio.`)
+            .customSanitizer(normalizeBoolean)
             .isBoolean().withMessage('El valor debe ser Si o No')
-    }),
+    ),
 
     // ---------- Especificaciones DuracionBateria
     body('especificaciones.duracionBateria')
         .notEmpty().withMessage('La duración de batería es obligatoria.')
-        .isFloat({ min: 0 }).withMessage('La duración de batería no puede ser negativa.')
-        .toFloat(),
+        .custom(value => normalizeNumber(value, 'float', 0)),
 
     // ---------- Items
     body('items')
-        .notEmpty().withMessage('Debe haber al menos una variante.'),
+        .isArray({ min: 1 }).withMessage('Debe haber al menos una variante.')
+        .customSanitizer(normalizeColorsAndCheckDuplicates),
 
     // ---------- items-Imagen
     body('items.*.imagen')
+        .customSanitizer(value => normalizeString(value, false)) 
         .notEmpty().withMessage('La imagen es obligatoria.')
-        .isURL().withMessage('La imagen debe ser una URL válida'),
+        .isURL({ protocols: ['http','https'], require_protocol: true }).withMessage('La imagen debe ser una URL válida'),
 
     // ---------- items-Color
     body('items.*.color')
-        .notEmpty().withMessage('El color es obligatorio.'),
+        .notEmpty().withMessage('El color es obligatorio.')
+        .custom(value => {
+            if (!colors.hasOwnProperty(value)) throw new Error('El color no es válido.')
+            return true
+        }),
 
     // ---------- items-Stock
     body('items.*.stock')
         .notEmpty().withMessage('El stock es obligatorio.')
-        .isInt({ min: 0 }).withMessage('El stock debe ser un numero entero mayor a 0.')
-        .toInt()
+        .custom(value => normalizeNumber(value, 'int', 0))
 
-
-    
 ]

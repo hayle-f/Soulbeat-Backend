@@ -1,6 +1,8 @@
 import express from 'express'
 import { obtenerTodosAurisController, obtenerAuriPorIdController, crearNuevoAuriController, modificarAuriController, eliminarAuriController, obtenerAurisPorAtributoController } from '../controllers/aurisController.js'
 import { parseValor } from '../middleware/parseParams.js'
+import { aurisValidations } from '../validations/aurisValidations.js'
+import { handleValidationErrors } from '../middleware/handleValidationsErrors.js'
 
 
 const router = express.Router()
@@ -12,10 +14,10 @@ router.get('/auriculares', obtenerTodosAurisController)
 router.get('/auriculares/:id', obtenerAuriPorIdController)
 
 // Crear nuevo Auricular
-router.post('/auriculares', crearNuevoAuriController)
+router.post('/auriculares', aurisValidations(), handleValidationErrors, crearNuevoAuriController)
 
 // Modificar auricular
-router.put('/auriculares/:id', modificarAuriController)
+router.put('/auriculares/:id', aurisValidations(), handleValidationErrors, modificarAuriController)
 
 // Eliminar auricular
 router.delete('/auriculares/:id', eliminarAuriController)
