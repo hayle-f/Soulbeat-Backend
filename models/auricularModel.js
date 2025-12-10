@@ -57,6 +57,8 @@ const auricularSchema = new mongoose.Schema({
 
 // Pre-save para generar ids de items automáticamente: productId-color
 auricularSchema.pre('validate', function () {
+    if (this.fromFront) return; // viene del frontend, no tocar IDs
+
     if (this.items && this.items.length) {
         this.items = this.items.map(item => {
             if (!item.id) {
