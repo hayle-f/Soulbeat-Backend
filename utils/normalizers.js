@@ -1,6 +1,6 @@
-/*  */
+
 // Normaliza un string: trim + reemplaza espacios múltiples por uno, opcionalmente lowercase
-export const normalizeString = (value, lower = false) => {
+export const normalizeString = (value, lower) => {
     if (typeof value !== 'string') return ''
     const normalized = value.replace(/\s+/g, ' ').trim()
     return lower ? normalized.toLowerCase() : normalized
@@ -14,7 +14,7 @@ export const normalizeBoolean = (value) => {
         if (v === 'si' || v === 'true') return true
         if (v === 'no' || v === 'false') return false
     }
-    return false // si no es reconocible, devuelve false por defecto
+    return value // si no es reconocible, devuelve valor
 }
 
 // Convierte a número (float o int), devuelve NaN si no se puede
@@ -24,18 +24,10 @@ export const normalizeNumber = (value, type = 'float') => {
     return isNaN(n) ? NaN : n
 }
 
-// Normaliza colores de items (trim + lowercase) y chequea duplicados
-export const normalizeColorsAndCheckDuplicates = (items) => {
-    if (!Array.isArray(items)) return []
-    const seen = new Set()
+// Normaliza colores de items (trim + lowercase)
+export const normalizeColors = (items) => {
     return items.map(item => {
-        if (!item.color) return item
-        const color = normalizeString(item.color, true)
-        if (seen.has(color)) throw new Error(`El color '${item.color}' está repetido.`)
-        seen.add(color)
-        return {
-            ...item,
-            color
-        }
+        if (!item.color) return item // no toca items sin color
+        return { ...item, color: normalizeString(item.color, true) }
     })
 }

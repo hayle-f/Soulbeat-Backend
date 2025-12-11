@@ -1,10 +1,14 @@
 /*  */
 import { body } from "express-validator"
-import { normalizeString, normalizeBoolean, normalizeNumber, normalizeColorsAndCheckDuplicates } from '../utils/normalizers.js'
+import { normalizeString, normalizeBoolean, normalizeNumber, normalizeColors } from '../utils/normalizers.js'
 import { colors } from '../utils/colors.js'
 
 
 export const aurisValidations = () => [
+
+    // --------- ID
+    body('id')
+        .notEmpty().withMessage('El ID es obligatorio.'),
 
     //---------- Nombre obligatorio
     body('nombre')
@@ -23,7 +27,7 @@ export const aurisValidations = () => [
 
     // ---------- Precio
     body('precio')
-        .notEmpty().withMessage('El precio es obligatorio.')
+        .notEmpty().withMessage('El precio es obligatorio.').bail()
         .custom(value => {
             // normaliza y valida que sea número >= 0
             const n = normalizeNumber(value, 'float')
@@ -36,25 +40,41 @@ export const aurisValidations = () => [
     // Crea la validación de cada booleano y el '...' asegura que cada body() quede como middleware independiente al mismo nivel que las demás
     ...['inalambrico', 'resistenteAgua', 'cancelacionRuido', 'microfono'].map((esp) => 
         body(`especificaciones.${esp}`)
-            .exists().withMessage(`El valor de ${esp} es obligatorio.`)
+            .exists().withMessage(`El valor de ${esp} es obligatorio.`).bail()
             .customSanitizer(normalizeBoolean)
             .isBoolean().withMessage('El valor debe ser Si o No')
     ),
 
     // ---------- Especificaciones DuracionBateria
     body('especificaciones.duracionBateria')
-        .notEmpty().withMessage('La duración de batería es obligatoria.')
-        .custom(value => {
+        .customSanitizer((value, { req }) => {
+            // Si no es inalámbrico, siempre ponemos 0
+            if (!req.body.especificaciones.inalambrico) return 0
+            return value // si es inalámbrico, se usa el valor tal cual
+        })
+        .custom((value, { req }) => {
             const n = normalizeNumber(value, 'float')
             if (isNaN(n)) throw new Error('Debe ser un número válido.')
-            if (n < 0) throw new Error('La duración de batería no puede ser menor que 0.')
+
+            if (req.body.especificaciones.inalambrico && n < 1) {
+                throw new Error('La duración de batería debe ser 1h o mas')
+            }
+
             return true
         }),
 
     // ---------- Items
     body('items')
-        .isArray({ min: 1 }).withMessage('Debe haber al menos una variante.')
-        .customSanitizer(normalizeColorsAndCheckDuplicates),
+        .isArray({ min: 1 }).withMessage('Debe haber al menos una variante.').bail()
+        .customSanitizer(normalizeColors) // limpia los colores
+        .custom(items => {
+            const seen = new Set()
+            items.forEach(item => {
+            if (seen.has(item.color)) throw new Error(`El color '${item.color}' está repetido.`)
+            seen.add(item.color)
+            })
+            return true
+        }),
 
     // ---------- items-Imagen
     body('items.*.imagen')
@@ -69,7 +89,7 @@ export const aurisValidations = () => [
 
     // ---------- items-Color
     body('items.*.color')
-        .notEmpty().withMessage('El color es obligatorio.')
+        .notEmpty().withMessage('El color es obligatorio.').bail()
         .custom(value => {
             if (!colors.hasOwnProperty(value)) throw new Error('El color no es válido.')
             return true
@@ -77,7 +97,7 @@ export const aurisValidations = () => [
 
     // ---------- items-Stock
     body('items.*.stock')
-        .notEmpty().withMessage('El stock es obligatorio.')
+        .notEmpty().withMessage('El stock es obligatorio.').bail()
         .custom(value => {
             const n = normalizeNumber(value, 'int')
             if (isNaN(n)) throw new Error('El stock debe ser un número válido.')
