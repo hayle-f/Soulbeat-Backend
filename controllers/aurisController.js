@@ -8,7 +8,7 @@ export async function obtenerTodosAurisController(req, res)  {
 
         //console.log('data obtenida en controller:', auris)
 
-        res.json(auris)
+        res.status(200).json(auris)
 
     } catch (error) {
         res.status(500).send({ mensaje: 'Error al obtener todos los auriculares', error: error.message })
@@ -25,7 +25,7 @@ export async function obtenerAuriPorIdController(req, res) {
             return res.status(404).send({mensaje: 'Auricular no encontrado.'})
         }
 
-        res.json(auri)
+        res.status(200).json(auri)
 
     } catch (error) {
         res.status(500).send({ mensaje: 'Error al obtener el auricular', error: error.message })
@@ -38,7 +38,7 @@ export async function crearNuevoAuriController(req, res) {
         const datosAuri = req.body
         const nuevoAuri = await crearNuevoAuri(datosAuri)
         
-        res.json(nuevoAuri)
+        res.status(201).json(nuevoAuri)
 
     } catch (error) {
         res.status(500).send({ mensaje: 'Error al crear nuevo Auricular', error: error.message }) 
@@ -55,7 +55,7 @@ export async function modificarAuriController(req, res) {
 
         const auriModificado = await modificarAuri(id, nuevosDatos)
 
-        res.json(auriModificado)
+        res.status(200).json(auriModificado)
 
     } catch (error) {
         res.status(500).send({ mensaje: 'Error al modificar el Auricular', error: error.message })
@@ -78,7 +78,7 @@ export async function eliminarAuriController(req, res) {
             return res.status(404).send({mensaje: 'Auricular no encontrado.'})
         }
 
-        res.json(auriEliminado)
+        res.status(200).json(auriEliminado)
 
     } catch (error) {
         res.status(500).send({ mensaje: 'Error al eliminar el auricular', error: error.message })
@@ -96,7 +96,7 @@ export async function obtenerAurisPorAtributoController(req, res) {
             return res.status(404).send({ mensaje: 'No se encontraron auriculares con ese atributo'})
         }
 
-        res.json(auris)
+        res.status(200).json(auris)
 
     } catch (error) {
         res.status(500).send({ mensaje: 'Error al filtrar los auriculares', error: error.message });
