@@ -63,7 +63,7 @@ class AuthService {
         const user = await userModel.findOne({ email }).populate('role')
 
         if (!user) {
-            throw new CustomError('Usuario o contraseña incorrectos', 401)
+            throw new CustomError('Correo o contraseña incorrectos', 401)
         }
 
          // Verificamos si la contraseña es correcta

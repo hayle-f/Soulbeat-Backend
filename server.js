@@ -27,6 +27,12 @@ app.use('/api/colors', colorsRoutes)
 app.use('/api/uploads/imgs', express.static('uploads/imgs'))
 app.use('/api/uploads', uploadRoutes)
 
+//manejo de errores inesperados
+app.use((err, req, res, next) => {
+    console.error(err)
+    res.status(err.status || 500).json({ mensaje: err.message || 'Error interno del servidor' })
+})
+
 // Arrancar servidor después de conectar DB
 connectDB()
     .then(() => {
