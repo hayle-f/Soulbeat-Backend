@@ -6,6 +6,7 @@ import soulbeatRoutes from './routes/soulbeatRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
 import authRoutes from './routes/authRoutes.js'
 import colorsRoutes from './routes/colorsRoutes.js'
+import { globalErrorHandler } from './middleware/globalErrorHandler.js'
 
 dotenv.config()
 
@@ -28,10 +29,7 @@ app.use('/api/uploads/imgs', express.static('uploads/imgs'))
 app.use('/api/uploads', uploadRoutes)
 
 //manejo de errores inesperados
-app.use((err, req, res, next) => {
-    console.error(err)
-    res.status(err.status || 500).json({ mensaje: err.message || 'Error interno del servidor' })
-})
+app.use(globalErrorHandler)
 
 // Arrancar servidor después de conectar DB
 connectDB()

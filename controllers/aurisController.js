@@ -1,8 +1,9 @@
-import { obtenerTodosAuris, obtenerAuriPorId, crearNuevoAuri, modificarAuri, eliminarAuri, obtenerAurisPorAtributo } from "../services/aurisService.js"
+import { obtenerTodosAuris, obtenerAuriPorId, crearNuevoAuri, modificarAuri, eliminarAuri, obtenerAurisPorAtributo, obtenerAurisPorAtributoNested } from "../services/aurisService.js"
+import { CustomError } from "../utils/customErrors.js"
 
 
 // Obtener Todos
-export async function obtenerTodosAurisController(req, res)  {
+export async function obtenerTodosAurisController(req, res, next)  {
     try {
         const auris = await obtenerTodosAuris()
 
@@ -11,29 +12,29 @@ export async function obtenerTodosAurisController(req, res)  {
         res.status(200).json(auris)
 
     } catch (error) {
-        res.status(500).send({ mensaje: 'Error al obtener todos los auriculares', error: error.message })
+        next(new CustomError('Error al obtener todos los auriculares', 500))
     }
 }
 
 // Obetener por ID
-export async function obtenerAuriPorIdController(req, res) {
+export async function obtenerAuriPorIdController(req, res, next) {
     try {
         const { id } = req.params
         const auri = await obtenerAuriPorId(id)
 
         if(!auri) {
-            return res.status(404).send({mensaje: 'Auricular no encontrado.'})
+            throw new CustomError('Auricular no encontrado', 404)
         }
 
         res.status(200).json(auri)
 
     } catch (error) {
-        res.status(500).send({ mensaje: 'Error al obtener el auricular', error: error.message })
+        next(error)
     }
 }
 
 // Crear nuevo
-export async function crearNuevoAuriController(req, res) {
+export async function crearNuevoAuriController(req, res, next) {
     try {
         const datosAuri = req.body
         const nuevoAuri = await crearNuevoAuri(datosAuri)
@@ -41,12 +42,12 @@ export async function crearNuevoAuriController(req, res) {
         res.status(201).json(nuevoAuri)
 
     } catch (error) {
-        res.status(500).send({ mensaje: 'Error al crear nuevo Auricular', error: error.message }) 
+        next(new CustomError('Error al crear nuevo auricular', 500))
     }
 }
 
 // Modificar Auri
-export async function modificarAuriController(req, res) {
+export async function modificarAuriController(req, res, next) {
     try {
         const { id } = req.params
         //pedir datos que vienen fusionados del middleware
@@ -55,68 +56,72 @@ export async function modificarAuriController(req, res) {
 
         const auriModificado = await modificarAuri(id, nuevosDatos)
 
+        if (!auriModificado) {
+            throw new CustomError('Auricular no encontrado', 404)
+        }
+
         res.status(200).json(auriModificado)
 
     } catch (error) {
-        res.status(500).send({ mensaje: 'Error al modificar el Auricular', error: error.message })
+        next(error)
     }
 }
 
 
 // Eliminar por ID
-export async function eliminarAuriController(req, res) {
+export async function eliminarAuriController(req, res, next) {
     try {
         const { id } = req.params
 
         if (!id) {
-            return res.status(400).send({ mensaje: 'ID no proporcionado' });
+            throw new CustomError('ID no proporcionado', 400)
         }
 
         const auriEliminado = await eliminarAuri(id)
 
         if(!auriEliminado) {
-            return res.status(404).send({mensaje: 'Auricular no encontrado.'})
+            throw new CustomError('Auricular no encontrado', 404)
         }
 
         res.status(200).json(auriEliminado)
 
     } catch (error) {
-        res.status(500).send({ mensaje: 'Error al eliminar el auricular', error: error.message })
+        next(error)
     }
 }
 
 // obtener auriculares por un atributo/valor
-export async function obtenerAurisPorAtributoController(req, res) {
+export async function obtenerAurisPorAtributoController(req, res, next) {
     try {
         const { atributo } = req.params
         const valor = req.valorParseado
         const auris = await obtenerAurisPorAtributo(atributo, valor)
 
         if(auris.length === 0) {
-            return res.status(404).send({ mensaje: 'No se encontraron auriculares con ese atributo'})
+            throw new CustomError('No se encontraron auriculares con ese atributo/valor', 404)
         }
 
         res.status(200).json(auris)
 
     } catch (error) {
-        res.status(500).send({ mensaje: 'Error al filtrar los auriculares', error: error.message });
+        next(error)
     }
 }
 
-/* // obtener auriculares por un atributo/valor Nested
-export async function obtenerAurisPorAtributoNestedController(req, res) {
+// obtener auriculares por un atributo/valor Nested
+export async function obtenerAurisPorAtributoNestedController(req, res, next) {
     try {
         const { atributo } = req.params
         const valor = req.valorParseado
         const auris = await obtenerAurisPorAtributoNested(atributo, valor)
 
         if(auris.length === 0) {
-            return res.status(404).send({ mensaje: 'No se encontraron auriculares con ese atributo'})
+            throw new CustomError('No se encontraron auriculares con ese atributo', 404)
         }
 
         res.json(auris)
 
     } catch (error) {
-        res.status(500).send({ mensaje: 'Error al filtrar los auriculares', error: error.message });
+        next(error)
     }
-} */
+}

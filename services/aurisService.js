@@ -28,6 +28,6 @@ export async function obtenerAurisPorAtributo(atributo, valor) {
     return await AuricularRepository.obtenerPorAtributo(atributo,valor)
 }
 
-/* export async function obtenerAurisPorAtributoNested(atributo, valor) {
+export async function obtenerAurisPorAtributoNested(atributo, valor) {
     return await AuricularRepository.obtenerPorAtributoNested(atributo,valor)
-} */
+}

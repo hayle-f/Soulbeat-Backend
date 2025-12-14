@@ -1,15 +1,18 @@
-import { validationResult } from "express-validator";
+import { validationResult } from "express-validator"
+import { CustomError } from "../utils/customErrors.js"
 
 
 // Middleware que recoge los errores de validación generados por express-validator
-// y responde con status 400 si hay alguno; si no, pasa al siguiente middleware/handler
+// y los convierte en un CustomError para que el middleware global los maneje
+// Si no hay errores, pasa al siguiente middleware/controller
+
 export const handleValidationErrors = (req, res, next) => {
     const errors = validationResult(req)
 
     if (!errors.isEmpty()) {
-        
-        return res.status(400).json({ errores: errors.array() })
+        // En vez de responder directamente, lanzamos un CustomError
+        return next(new CustomError("Errores de validación", 400, errors.array()))
     }
 
-    next()
+    next() 
 }

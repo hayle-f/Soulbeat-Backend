@@ -88,26 +88,30 @@ class AuthService {
 
     // Método auxiliar para generar tokens JWT
     generateToken(user) {
-        // Mapeo de roles a expiraciones de token
-        const expirations = {
-            user: '7d',
-            admin: '8h',
-        }
-
-        // Tomamos la expiración según el rol del usuario; si no existe, usamos un valor por defecto
-        const expiresIn = expirations[user.role.name] || '1d'
-
-        // Información que vamos a incluir dentro del token
-        // Esto es lo que el backend podrá verificar cuando el usuario haga requests
-        const tokenData  = { 
-                id: user._id,
-                role: user.role.name
+        try {
+            // Mapeo de roles a expiraciones de token
+            const expirations = {
+                user: '7d',
+                admin: '8h',
             }
 
-        // Creamos y devolvemos el token que incluye el id, rol y permisos del usuario, usando la clave secreta del .env    
-        return jwt.sign(
-            tokenData, process.env.JWT_SECRET, { expiresIn }
-        )
+            // Tomamos la expiración según el rol del usuario; si no existe, usamos un valor por defecto
+            const expiresIn = expirations[user.role.name] || '1d'
+
+            // Información que vamos a incluir dentro del token
+            // Esto es lo que el backend podrá verificar cuando el usuario haga requests
+            const tokenData  = { 
+                    id: user._id,
+                    role: user.role.name
+                }
+
+            // Creamos y devolvemos el token que incluye el id, rol y permisos del usuario, usando la clave secreta del .env    
+            return jwt.sign(
+                tokenData, process.env.JWT_SECRET, { expiresIn }
+            )
+        } catch (error) {
+            throw new CustomError('Error generando token', 500)
+        }
     }
 }
 

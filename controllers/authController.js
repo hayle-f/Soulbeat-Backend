@@ -1,6 +1,6 @@
 import AuthService from '../services/authService.js'
 
-export async function registerController(req, res)  {
+export async function registerController(req, res, next)  {
     try {
         const userData = req.body
 
@@ -9,12 +9,12 @@ export async function registerController(req, res)  {
         res.status(201).json(result) // 201 Created
 
     } catch (error) {
-        res.status(error.status || 500).json({ mensaje: error.message })
+        next(error)
     }
 }
 
 
-export async function loginController(req, res)  {
+export async function loginController(req, res, next)  {
     try {
         const { email, password } = req.body
 
@@ -23,6 +23,6 @@ export async function loginController(req, res)  {
         res.status(200).json({ user, token }) //200 OK
 
     } catch (error) {
-        res.status(error.status || 500).json({ mensaje: error.message })
+        next(error)
     }
 }

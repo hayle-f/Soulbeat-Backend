@@ -1,5 +1,5 @@
 import express from 'express'
-import { obtenerTodosAurisController, obtenerAuriPorIdController, crearNuevoAuriController, modificarAuriController, eliminarAuriController, obtenerAurisPorAtributoController } from '../controllers/aurisController.js'
+import { obtenerTodosAurisController, obtenerAuriPorIdController, crearNuevoAuriController, modificarAuriController, eliminarAuriController, obtenerAurisPorAtributoController, obtenerAurisPorAtributoNestedController } from '../controllers/aurisController.js'
 import { parseValor } from '../middleware/parseParams.js'
 import { aurisValidations } from '../validations/aurisValidations.js'
 import { handleValidationErrors } from '../middleware/handleValidationsErrors.js'
@@ -28,7 +28,7 @@ router.delete('/auriculares/:id', authMiddleware, adminMiddleware, eliminarAuriC
 router.get('/auriculares/filtro/:atributo/:valor', parseValor, obtenerAurisPorAtributoController)
 
 // Obtener auriculares por Atributo/Valor anidado
-//router.get('/auriculares/filtro/nested/:atributo/:valor', parseValor, obtenerAurisPorAtributoNestedController)
+router.get('/auriculares/filtro/nested/:atributo/:valor', parseValor, obtenerAurisPorAtributoNestedController)
 
 
 

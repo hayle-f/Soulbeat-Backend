@@ -2,9 +2,10 @@
 // Permite lanzar errores con mensaje y código HTTP, que luego pueden ser manejados en controllers
 
 export class CustomError extends Error {
-    constructor(message, status) {
-        super(message);       // mensaje del error
-        this.status = status;  // código HTTP
-        this.name = "CustomError"; // opcional, para identificar la clase
+    constructor(message, statusCode = 400, errors = []) {
+        super(message);
+        this.statusCode = statusCode;  // Código HTTP
+        this.errors = errors;          // Errores específicos (opcional)
+        this.name = "CustomError";
     }
 }

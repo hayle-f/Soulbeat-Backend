@@ -38,17 +38,24 @@ class AuricularRepository extends IRepository {
             return await AuricularModel.find({ precio: { $gte: min, $lte: max } })
         }
         return await AuricularModel.find({ [atributo]: valor })
-    }
+    }    
     
-    
-    /* // Devuelve auris filtrando por atributo dinámico nested
+    // Devuelve auris filtrando por atributo dinámico nested
     async obtenerPorAtributoNested(atributo, valor) {
+        const camposEspecificaciones = ["inalambrico", "resistenteAgua", "cancelacionRuido", "microfono", "duracionBateria"]
 
-        return await AuricularModel.find({ [atributo]: valor })
+        if (camposEspecificaciones.includes(atributo)) {
+            if (atributo === "duracionBateria" && Array.isArray(valor)) {
+                const [min, max] = valor
+                return await AuricularModel.find({ [`especificaciones.${atributo}`]: { $gte: min, $lte: max } })
+            }
+            return await AuricularModel.find({ [`especificaciones.${atributo}`]: valor })
+        }
+
+        if (atributo === "color") {
+            return await AuricularModel.find({ "items.color": valor })
+        }
     }
-
- */
-
 
 }
 
