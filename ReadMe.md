@@ -96,3 +96,11 @@ Se encarga de:
 
 ---
 
+### Link Render: https://soulbeat-backend.onrender.com/
+
+Datos admin: 
+```bash
+email: admin@soulbeat.com
+passw: AdminPass1234
+```
+
