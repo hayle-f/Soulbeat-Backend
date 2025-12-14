@@ -2,7 +2,9 @@ import multer from "multer"
 import fs from 'fs'
 import path from "path"
 import express from 'express'
+import dotenv from 'dotenv'
 
+dotenv.config()
 const router = express.Router()
 
 // Configurar Multer para guardar archivos temporalmente en 'uploads/tmp'
@@ -22,8 +24,7 @@ router.post('/imgs', upload.single('imgVariante'), (req, res) => {
     fs.renameSync(req.file.path, newPath)
 
     // construir la URL pública
-    const urlImagen = `${req.protocol}://${req.get('host')}/api/uploads/imgs/${req.file.filename}${extension}`
-
+    const urlImagen = `${process.env.BACKEND_URL}/api/uploads/imgs/${req.file.filename}${extension}`
 
     res.json({ url: urlImagen })
 })
