@@ -1,6 +1,9 @@
 import { obtenerTodosAuris, obtenerAuriPorId, crearNuevoAuri, modificarAuri, eliminarAuri, obtenerAurisPorAtributo, obtenerAurisPorAtributoNested } from "../services/aurisService.js"
 import { CustomError } from "../utils/customErrors.js"
 
+/* El controller es solo una capa intermedia: recibe la request, extrae los datos necesarios y llama al service para que haga la lógica real.
+Manejo de errores (Custom y global).
+ */
 
 // Obtener Todos
 export async function obtenerTodosAurisController(req, res, next)  {
@@ -12,7 +15,8 @@ export async function obtenerTodosAurisController(req, res, next)  {
         res.status(200).json(auris)
 
     } catch (error) {
-        next(new CustomError('Error al obtener todos los auriculares', 500))
+        next(error)
+        //next(new CustomError('Error al obtener todos los auriculares', 500))
     }
 }
 
@@ -42,7 +46,8 @@ export async function crearNuevoAuriController(req, res, next) {
         res.status(201).json(nuevoAuri)
 
     } catch (error) {
-        next(new CustomError('Error al crear nuevo auricular', 500))
+        next(error)
+        //next(new CustomError('Error al crear nuevo auricular', 500))
     }
 }
 

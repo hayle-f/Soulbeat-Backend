@@ -1,6 +1,6 @@
 export const globalErrorHandler = (err, req, res, next) => {
-    // Mostramos el error en consola para depuración
-    console.error('error:', err)
+    
+    //console.error('error:', err)
 
     // Si es un CustomError lanzado por nuestro servicio o controller
     if (err.name === 'CustomError') {

@@ -9,22 +9,29 @@ const router = express.Router()
 const upload = multer({ dest: 'uploads/tmp' })
 
 // Endpoint para subir imagenes
-router.post('/imgs', upload.single('imgVariante'), (req, res) => {
-    if (!req.file) return res.status(400).json({ message: 'No se subió ningún archivo' })
+router.post('/imgs', upload.single('imgVariante'), (req, res, next) => {
+    try {
+        //if (!req.file) return res.status(400).json({ message: 'No se subió ningún archivo' })
+        if (!req.file) throw new CustomError('No se subió ningún archivo', 400)
 
-    // obtener la extensión del archivo original
-    const extension = path.extname(req.file.originalname)
+        // obtener la extensión del archivo original
+        const extension = path.extname(req.file.originalname)
 
-    // Construir la nueva ruta final del archivo con extensión
-    const newPath = `uploads/imgs/${req.file.filename}${extension}`
+        // Construir la nueva ruta final del archivo con extensión
+        const newPath = `uploads/imgs/${req.file.filename}${extension}`
 
-    // Mover/renombrar el archivo desde tmp a la carpeta final
-    fs.renameSync(req.file.path, newPath)
+        // Mover/renombrar el archivo desde tmp a la carpeta final
+        fs.renameSync(req.file.path, newPath)
 
-    // construir la URL pública
-    const urlImagen = `https://soulbeat-backend.onrender.com/api/uploads/imgs/${req.file.filename}${extension}`
+        // construir la URL pública
+        const urlImagen = `https://soulbeat-backend.onrender.com/api/uploads/imgs/${req.file.filename}${extension}`
 
-    res.json({ url: urlImagen })
+        res.json({ url: urlImagen })
+        
+    } catch (error) {
+        next(error)
+    }
+    
 })
 
 export default router

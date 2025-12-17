@@ -6,7 +6,7 @@ export function parseValor(req, res, next) {
     if ((atributo === "precio" || atributo === "duracionBateria") && valor.includes("-")) {
         const partes = valor.split("-")  // ["5000", "10000"]
         req.valorParseado = partes.map(Number) // [5000, 10000]
-        // comentario: lo guardamos como array de 2 nums
+        // lo guardamos como array de 2 nums
     } 
     // Si no es rango, parseo automático normal
     else {

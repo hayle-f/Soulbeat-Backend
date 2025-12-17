@@ -8,12 +8,15 @@ import authRoutes from './routes/authRoutes.js'
 import colorsRoutes from './routes/colorsRoutes.js'
 import { globalErrorHandler } from './middleware/globalErrorHandler.js'
 
+// Cargar variables de entorno
 dotenv.config()
 
+// Crear instancia de Express
 const app = express()
 const PORT = process.env.PORT || 5001
 
 app.use(express.json())
+// Habilitar CORS (permite requests del front)
 app.use(cors())
 
 // Ruta raíz de prueba
@@ -21,6 +24,7 @@ app.get('/', (req, res) => {
     res.send({ status: "OK", message: "Backend SoulBeat funcionando 🚀" })
 })
 
+// Rutas
 app.use('/api', soulbeatRoutes)
 app.use('/auth', authRoutes)
 app.use('/api/colors', colorsRoutes)
@@ -28,7 +32,7 @@ app.use('/api/colors', colorsRoutes)
 app.use('/api/uploads/imgs', express.static('uploads/imgs'))
 app.use('/api/uploads', uploadRoutes)
 
-//manejo de errores inesperados
+// Manejo de errores inesperados
 app.use(globalErrorHandler)
 
 // Arrancar servidor después de conectar DB
