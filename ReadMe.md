@@ -98,9 +98,9 @@ Se encarga de:
 
 ### Link Render: https://soulbeat-backend.onrender.com/
 
-Datos admin: 
-```bash
-email: admin@soulbeat.com
-passw: AdminPass1234
-```
+### 🔐 Acceso de Demo (Administrador)
 
+Estas credenciales se proporcionan **solo con fines de demostración**, para probar el manejo de roles y permisos:
+
+email: admin@soulbeat.com  
+contraseña: AdminPass1234  
