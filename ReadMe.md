@@ -96,11 +96,13 @@ Se encarga de:
 
 ---
 
-### Link Render: https://soulbeat-backend.onrender.com/
+### 🔗 Link del backend en Render
+[https://soulbeat-backend.onrender.com/](https://soulbeat-backend.onrender.com/)
 
-### 🔐 Acceso de Demo (Administrador)
+Este backend es consumido por el frontend [SoulBeat Front](https://github.com/hayle-f/soulbeat-front), que permite mostrar productos, gestionar favoritos y carrito, y administrar productos desde el panel de administración.
 
-Estas credenciales se proporcionan **solo con fines de demostración**, para probar el manejo de roles y permisos:
+### 🔐 Acceso de demostración (Administrador)
+Estas credenciales se proporcionan **solo con fines de demostración**:
 
-email: admin@soulbeat.com  
-contraseña: AdminPass1234  
+- **Email:** admin@soulbeat.com  
+- **Contraseña:** AdminPass1234
